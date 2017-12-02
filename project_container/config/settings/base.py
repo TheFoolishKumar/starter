@@ -1,6 +1,22 @@
 """Django settings for project."""
 
 import os
+import json
+
+from django.core.exceptions import ImproperlyConfigured
+
+with open('secrets.json') as f:
+    secrets = json.loads(f.read())
+
+
+def get_secret(setting, secrets=secrets):
+    """Get secret variable."""
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = 'Plese set {} environment variable'.format(setting)
+        raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,8 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'xl$pr6b6vzc*b#-t2(8@!$pcvm3^hse2$hye=$nxgd86tci=p8'
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -67,11 +84,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'test_database',  # Database name
-        'USER': 'test_database_user',  # Database user name
-        'PASSWORD': 'test_password',  # Password for USER
-        'HOST': 'localhost',  # Host
-        'PORT': '',  # Port
+        'NAME': get_secret("DATABASE_NAME"),  # Database name
+        'USER': get_secret("DATABASE_USER"),  # Database user name
+        'PASSWORD': get_secret("DATABASE_USER_PASSWORD"),  # Password for USER
+        'HOST': get_secret("DATABASE_HOST"),  # Host
+        'PORT': get_secret("DATABASE_PORT"),  # Port
     }
 }
 

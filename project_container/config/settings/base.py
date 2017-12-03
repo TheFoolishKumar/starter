@@ -1,29 +1,26 @@
 """Django settings for project."""
 
-import os
-import json
+from os.path import dirname, abspath, join, exists
+import environ
 
-from django.core.exceptions import ImproperlyConfigured
-
-with open('secrets.json') as f:
-    secrets = json.loads(f.read())
-
-
-def get_secret(setting, secrets=secrets):
-    """Get secret variable."""
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = 'Plese set {} environment variable'.format(setting)
-        raise ImproperlyConfigured(error_msg)
+# Build paths inside the project like this: join(BASE_DIR, "directory")
+BASE_DIR = dirname(dirname(dirname(__file__)))
+STATICFILES_DIRS = [join(BASE_DIR, 'static')]
+MEDIA_ROOT = join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
 
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Use 12factor inspired environment variables or from a file
+# import environ
+env = environ.Env()
+
+env_file = join(BASE_DIR, 'local.env')
+if exists(env_file):
+    environ.Env.read_env(str(env_file))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -57,7 +54,10 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            join(BASE_DIR, 'templates'),
+            # insert more TEMPLATE_DIRS here
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,16 +78,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': get_secret("DATABASE_NAME"),  # Database name
-        'USER': get_secret("DATABASE_USER"),  # Database user name
-        'PASSWORD': get_secret("DATABASE_USER_PASSWORD"),  # Password for USER
-        'HOST': get_secret("DATABASE_HOST"),  # Host
-        'PORT': get_secret("DATABASE_PORT"),  # Port
-    }
+    # Raises ImproperlyConfigured exception if DATABASE_URL not in
+    # os.environ
+    'default': env.db(),
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

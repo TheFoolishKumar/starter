@@ -1,6 +1,6 @@
 """Django settings for project."""
 
-from os.path import dirname, abspath, join, exists
+from os.path import dirname, join, exists
 import environ
 
 # Build paths inside the project like this: join(BASE_DIR, "directory")
@@ -21,9 +21,6 @@ if exists(env_file):
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 

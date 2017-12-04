@@ -5,8 +5,9 @@ import environ
 
 # Build paths inside the project like this: join(BASE_DIR, "directory")
 BASE_DIR = dirname(dirname(dirname(__file__)))
-STATICFILES_DIRS = [join(BASE_DIR, 'static')]
-MEDIA_ROOT = join(BASE_DIR, 'media')
+APPS_DIR = join(BASE_DIR, 'project_name')
+STATICFILES_DIRS = [join(APPS_DIR, 'static')]
+MEDIA_ROOT = join(APPS_DIR, 'media')
 MEDIA_URL = "/media/"
 
 
@@ -52,7 +53,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            join(BASE_DIR, 'templates'),
+            join(APPS_DIR, 'templates'),
             # insert more TEMPLATE_DIRS here
         ],
         'APP_DIRS': True,

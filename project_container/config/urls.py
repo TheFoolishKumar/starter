@@ -6,11 +6,12 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^app_name/', include('project_name.app_name.urls')),
 ]
 
-# Uncomment after adding apps
-# if settings.DEBUG:
-#    import debug_toolbar
-#    urlpatterns = [
-#        url(r'^__debug__/', include(debug_toolbar.urls)),
-#    ] + urlpatterns
+if settings.DEBUG:
+    if 'debug_toolbar' in settings.INSTALLED_APPS:
+        import debug_toolbar
+        urlpatterns = [
+            url(r'^__debug__/', include(debug_toolbar.urls)),
+        ] + urlpatterns

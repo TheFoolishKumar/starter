@@ -29,12 +29,22 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # Django
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admin',
+
+    # allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # Google Signup using allauth
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +79,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+
+# Authentication Backends
+# See: https://django-allauth.readthedocs.io/en/latest/installation.html
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 
 # Database
@@ -118,3 +140,32 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Location of root django.contrib.admin URL, use {% url 'admin:index' %}
+ADMIN_URL = r'^starter-admin/'
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
+SITE_ID = 1
+
+# defaults for account creatio
+# _______________________________________________________________________________
+
+# ask for either username or email during login
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+# Set Email field as required during signup
+ACCOUNT_EMAIL_REQUIRED = True
+# Set email versification necessary before creating account
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# Don't ask for username while signing up.
+# Users can later edit/change username in their profile.
+# If username is not set, use email to log in.
+ACCOUNT_USERNAME_REQUIRED = False
+
+
+# Log into account at '/accounts/login/'
+LOGIN_URL = 'account_login'
+# Redirect to '/app_name/home/' after successful login
+LOGIN_REDIRECT_URL = '/app_name/home/'
+# Redirect to '/app_name/home/' after logout
+ACCOUNT_LOGOUT_REDIRECT_URL = '/app_name/home/'

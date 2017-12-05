@@ -5,7 +5,15 @@ from django.contrib import admin
 from django.conf import settings
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    # Django Admin
+    url(settings.ADMIN_URL, admin.site.urls),
+
+    # flat pages
+
+    # User Management
+    url(r'^accounts/', include('allauth.urls')),
+
+    # Other Apps
     url(r'^app_name/', include('project_name.app_name.urls')),
 ]
 

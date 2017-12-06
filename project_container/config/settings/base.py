@@ -45,7 +45,27 @@ INSTALLED_APPS = [
 
     # Google Signup using allauth
     'allauth.socialaccount.providers.google',
+
+    # custom users app
+    'project_name.users.apps.UsersConfig',
+
+    # Other apps
 ]
+
+# Google Account Scope
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -148,8 +168,10 @@ ADMIN_URL = r'^starter-admin/'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
 
-# defaults for account creatio
-# _______________________________________________________________________________
+# defaults for account creation
+# -----------------------------------------------------------------------
+# Custom User Model
+AUTH_USER_MODEL = 'users.User'
 
 # ask for either username or email during login
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
@@ -161,11 +183,24 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # Users can later edit/change username in their profile.
 # If username is not set, use email to log in.
 ACCOUNT_USERNAME_REQUIRED = False
+# Login the user after email-confirmations
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+# Ask for emails from social accounts
+SOCIALACCOUNT_QUERY_EMAIL = True
 
 
 # Log into account at '/accounts/login/'
 LOGIN_URL = 'account_login'
-# Redirect to '/app_name/home/' after successful login
-LOGIN_REDIRECT_URL = '/app_name/home/'
-# Redirect to '/app_name/home/' after logout
-ACCOUNT_LOGOUT_REDIRECT_URL = '/app_name/home/'
+# Redirect to 'home' after successful login
+LOGIN_REDIRECT_URL = '/'
+# Redirect to 'home' after logout
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
+ACCOUNT_ADAPTER = 'project_name.users.adapters.AccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'project_name.users.adapters.SocialAccountAdapter'
+
+# Custom Signup form: Remove to enable default behaviour.
+# Including this simply adds another field to default fields,
+# such as a 'name' field in our case
+ACCOUNT_SIGNUP_FORM_CLASS = 'project_name.users.forms.SignupForm'

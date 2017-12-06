@@ -1,0 +1,47 @@
+{% load static i18n %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        {% block title %} Project Name {% endblock title %}
+    </title>
+
+    {% block css %}
+
+    {% endblock %}
+
+  </head>
+
+  <body>
+
+    <a href="{% url "app_name:home" %}">Home</a>
+
+
+    {% if request.user.is_authenticated %}
+        {# URL provided by django-allauth/account/urls.py #}
+        <a href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
+        <a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+    {% else %}
+        <a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+        <a href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+    {% endif %}
+
+
+    {% if messages %}
+        {% for message in messages %}
+            <div> {{ message }} </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+        <p>Content</p>
+    {% endblock content %}
+
+
+    {% block modal %}
+
+    {% endblock modal %}
+  </body>
+</html>

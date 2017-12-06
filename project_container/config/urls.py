@@ -10,11 +10,12 @@ urlpatterns = [
 
     # flat pages
 
-    # User Management
+    # User management
+    url(r'^users/', include('project_name.users.urls', namespace='users')),
     url(r'^accounts/', include('allauth.urls')),
 
     # Other Apps
-    url(r'^app_name/', include('project_name.app_name.urls')),
+    url(r'^', include('project_name.app_name.urls', namespace='app_name')),
 ]
 
 if settings.DEBUG:
